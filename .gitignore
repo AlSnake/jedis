@@ -9,6 +9,7 @@ target
 build
 .gradle
 out
+bin
 
 # Compiled class file
 *.class
