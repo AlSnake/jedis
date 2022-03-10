@@ -3,8 +3,10 @@ package com.github.alsnake.jedis.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.alsnake.jedis.commands.EchoCommand;
 import com.github.alsnake.jedis.commands.PingCommand;
 import com.github.alsnake.jedis.server.Encode;
+import com.github.alsnake.jedis.server.Message;
 import com.github.alsnake.jedis.server.Reply;
 import com.github.alsnake.jedis.server.Request;
 
@@ -13,6 +15,7 @@ public class CommandManager {
 
 	public CommandManager() {
 		addCommand(new PingCommand());
+		addCommand(new EchoCommand());
 	}
 
 	public void addCommand(ICommand command) {
@@ -35,10 +38,10 @@ public class CommandManager {
 		if (request.getCmd() != null) {
 			ICommand command = getCommand(request.getCmd());
 			if (command != null) {
-				command.execute(new CommandContext(request.getArgs(), reply));
+				command.execute(new CommandContext(request.getCmd(), request.getArgs(), reply));
 			} else {
-				reply.reply(String.format("ERR unknown command '%s' with args: '%s'", request.getCmd(),
-						String.join(" ", request.getArgs())), Encode.ERROR);
+				reply.reply(Message.unknownCommand(request.getCmd(), String.join(" ", request.getArgs())),
+						Encode.ERROR);
 			}
 		}
 	}
