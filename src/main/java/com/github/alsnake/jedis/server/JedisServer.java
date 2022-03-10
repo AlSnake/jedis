@@ -30,7 +30,7 @@ public class JedisServer {
 	}
 
 	public void run() {
-		LOGGER.info("Jedis running on Port: " + port);
+		LOGGER.info(String.format("Jedis running on '%s':'%d'", host, port));
 
 		while (true) {
 			try {
