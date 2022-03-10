@@ -3,6 +3,8 @@ package com.github.alsnake.jedis.server;
 public class Encoder {
 	public String encode(String data, Encode encode) {
 		switch (encode) {
+			case NONE:
+				return data;
 			case SIMPLE_STRING:
 				return encodeSimpleString(data);
 			case BULK_STRING:

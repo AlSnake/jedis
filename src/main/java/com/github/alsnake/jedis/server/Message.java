@@ -9,4 +9,8 @@ public class Message {
 	public static String wrongArgumentCount(String cmd) {
 		return String.format("ERR wrong number of arguments for '%s' command", cmd);
 	}
+
+	public static String syntaxError() {
+		return "ERR syntax error";
+	}
 }

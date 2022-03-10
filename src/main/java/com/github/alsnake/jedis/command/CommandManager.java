@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.alsnake.jedis.commands.EchoCommand;
+import com.github.alsnake.jedis.commands.GetCommand;
 import com.github.alsnake.jedis.commands.PingCommand;
+import com.github.alsnake.jedis.commands.SetCommand;
 import com.github.alsnake.jedis.server.Encode;
 import com.github.alsnake.jedis.server.Message;
 import com.github.alsnake.jedis.server.Reply;
@@ -16,6 +18,8 @@ public class CommandManager {
 	public CommandManager() {
 		addCommand(new PingCommand());
 		addCommand(new EchoCommand());
+		addCommand(new SetCommand());
+		addCommand(new GetCommand());
 	}
 
 	public void addCommand(ICommand command) {
