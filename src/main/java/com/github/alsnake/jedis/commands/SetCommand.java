@@ -14,14 +14,24 @@ public class SetCommand implements ICommand {
 			return;
 		}
 
-		if (ctx.getArgs().size() > 2) {
-			ctx.getReply().reply(Message.syntaxError(), Encode.ERROR);
-			return;
-		}
-
 		String key = ctx.getArgs().get(0);
 		String value = ctx.getArgs().get(1);
-		DataStore.set(key, value);
+
+		if (ctx.getArgs().size() > 2) {
+			String behavior = ctx.getArgs().get(2);
+			if (behavior.toLowerCase().equals("px")) {
+				try {
+					String timems = ctx.getArgs().get(3);
+					DataStore.set(key, value, Integer.parseInt(timems));
+				} catch (IndexOutOfBoundsException e) {
+					ctx.getReply().reply(Message.syntaxError(), Encode.ERROR);
+					return;
+				}
+			}
+		} else {
+			DataStore.set(key, value);
+		}
+
 		ctx.getReply().reply("OK", Encode.SIMPLE_STRING);
 	}
 

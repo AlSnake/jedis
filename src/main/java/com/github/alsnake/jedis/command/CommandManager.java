@@ -40,7 +40,7 @@ public class CommandManager {
 
 	public void handle(Request request, Reply reply) {
 		if (request.getCmd() != null) {
-			ICommand command = getCommand(request.getCmd());
+			ICommand command = getCommand(request.getCmd().toLowerCase());
 			if (command != null) {
 				command.execute(new CommandContext(request.getCmd(), request.getArgs(), reply));
 			} else {
