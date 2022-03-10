@@ -1,0 +1,21 @@
+package com.github.alsnake.jedis.server;
+
+public class Encoder {
+	public String encode(String data, Encode encode) {
+		switch (encode) {
+			case SIMPLE_STRING:
+				return encodeSimpleString(data);
+			case BULK_STRING:
+				return encodeBulkString(data);
+		}
+		return "UNSUPPORTED ENCODER TYPE";
+	}
+
+	private String encodeSimpleString(String data) {
+		return "+" + data + "\r\n";
+	}
+
+	private String encodeBulkString(String data) {
+		return "$" + data.length() + "\r\n" + data + "\r\n";
+	}
+}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.alsnake.jedis.commands.PingCommand;
+import com.github.alsnake.jedis.server.Reply;
 import com.github.alsnake.jedis.server.Request;
 
 public class CommandManager {
@@ -29,11 +30,11 @@ public class CommandManager {
 		return null;
 	}
 
-	public void handle(Request request) {
+	public void handle(Request request, Reply reply) {
 		if (request.getCmd() != null) {
 			ICommand command = getCommand(request.getCmd());
 			if (command != null) {
-				command.execute(new CommandContext(request.getArgs()));
+				command.execute(new CommandContext(request.getArgs(), reply));
 			} else {
 				System.out.println("INVALID COMMAND: " + request.getCmd());
 			}
