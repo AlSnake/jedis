@@ -1,4 +1,4 @@
-package com.github.alsnake.jedis;
+package com.github.alsnake.jedis.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

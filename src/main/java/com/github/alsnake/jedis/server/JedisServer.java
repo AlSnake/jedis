@@ -1,19 +1,19 @@
-package com.github.alsnake.jedis;
+package com.github.alsnake.jedis.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import com.github.alsnake.jedis.command.CommandManager;
+
 public class JedisServer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JedisServer.class);
+	private final CommandManager commandManager = new CommandManager();
 	private ServerSocket serverSocket;
 	private String host;
 	private int port;
@@ -40,9 +40,7 @@ public class JedisServer {
 
 				String data = socketReadAll(clientSocket);
 				Request request = RequestParser.parse(data);
-				if (request.getCmd() != null) {
-					System.out.println(request.getCmd());
-				}
+				commandManager.handle(request);
 
 				clientSocket.close();
 			} catch (IOException e) {
