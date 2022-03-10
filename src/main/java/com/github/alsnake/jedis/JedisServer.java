@@ -2,7 +2,12 @@ package com.github.alsnake.jedis;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -30,12 +35,29 @@ public class JedisServer {
 
 		while (true) {
 			try {
-				Socket client = serverSocket.accept();
-				System.out.println("CONNECTED: " + client);
-				client.close();
+				Socket clientSocket = serverSocket.accept();
+				// System.out.println("CONNECTED: " + clientSocket);
+
+				String data = socketReadAll(clientSocket);
+				Request request = RequestParser.parse(data);
+				if (request.getCmd() != null) {
+					System.out.println(request.getCmd());
+				}
+
+				clientSocket.close();
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage());
 			}
 		}
+	}
+
+	private String socketReadAll(Socket socket) throws IOException {
+		BufferedReader input = new BufferedReader(
+				new InputStreamReader(socket.getInputStream()));
+		StringBuilder sb = new StringBuilder();
+		String line;
+		while (input.ready() && (line = input.readLine()) != null)
+			sb.append(line).append("\r\n");
+		return sb.toString();
 	}
 }
