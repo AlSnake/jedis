@@ -14,7 +14,7 @@ import com.github.alsnake.jedis.command.CommandManager;
 
 public class JedisServer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JedisServer.class);
-	private final CommandManager commandManager = new CommandManager();
+	private static final CommandManager commandManager = new CommandManager();
 	private ServerSocket serverSocket;
 	private String host;
 	private int port;
@@ -37,26 +37,39 @@ public class JedisServer {
 		while (true) {
 			try {
 				Socket clientSocket = serverSocket.accept();
-
-				String data = socketReadAll(clientSocket);
-				Request request = RequestParser.parse(data);
-				Reply reply = new Reply(new Encoder(), clientSocket);
-				commandManager.handle(request, reply);
-
-				clientSocket.close();
+				JedisClientHandler clientHandler = new JedisClientHandler(clientSocket);
+				new Thread(clientHandler).start();
 			} catch (IOException e) {
 				LOGGER.error(e.getMessage());
 			}
 		}
 	}
 
-	private String socketReadAll(Socket socket) throws IOException {
-		BufferedReader input = new BufferedReader(
-				new InputStreamReader(socket.getInputStream()));
-		StringBuilder sb = new StringBuilder();
-		String line;
-		while (input.ready() && (line = input.readLine()) != null)
-			sb.append(line).append("\r\n");
-		return sb.toString();
+	private static class JedisClientHandler implements Runnable {
+		private final Socket clientSocket;
+
+		public JedisClientHandler(Socket clientSocket) {
+			this.clientSocket = clientSocket;
+		}
+
+		@Override
+		public void run() {
+			try {
+				String data = Util.socketReadAll(clientSocket);
+				Request request = RequestParser.parse(data);
+				Reply reply = new Reply(new Encoder(), clientSocket);
+				commandManager.handle(request, reply);
+				clientSocket.close();
+			} catch (IOException e) {
+				LOGGER.error(e.getMessage());
+			} finally {
+				try {
+					if (clientSocket != null)
+						clientSocket.close();
+				} catch (IOException e) {
+					LOGGER.error(e.getMessage());
+				}
+			}
+		}
 	}
 }

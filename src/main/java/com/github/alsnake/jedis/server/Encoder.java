@@ -7,6 +7,8 @@ public class Encoder {
 				return encodeSimpleString(data);
 			case BULK_STRING:
 				return encodeBulkString(data);
+			case ERROR:
+				return encodeError(data);
 		}
 		return "UNSUPPORTED ENCODER TYPE";
 	}
@@ -17,5 +19,9 @@ public class Encoder {
 
 	private String encodeBulkString(String data) {
 		return "$" + data.length() + "\r\n" + data + "\r\n";
+	}
+
+	private String encodeError(String data) {
+		return "-" + data + "\r\n";
 	}
 }

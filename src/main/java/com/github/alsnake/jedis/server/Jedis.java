@@ -9,6 +9,5 @@ public class Jedis {
 	public static void main(String[] args) {
 		JedisServer jedisServer = new JedisServer("localhost", 6379);
 		jedisServer.run();
-		;
 	}
 }

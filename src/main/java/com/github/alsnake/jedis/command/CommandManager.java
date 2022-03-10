@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.alsnake.jedis.commands.PingCommand;
+import com.github.alsnake.jedis.server.Encode;
 import com.github.alsnake.jedis.server.Reply;
 import com.github.alsnake.jedis.server.Request;
 
@@ -36,7 +37,8 @@ public class CommandManager {
 			if (command != null) {
 				command.execute(new CommandContext(request.getArgs(), reply));
 			} else {
-				System.out.println("INVALID COMMAND: " + request.getCmd());
+				reply.reply(String.format("ERR unknown command '%s' with args: '%s'", request.getCmd(),
+						String.join(" ", request.getArgs())), Encode.ERROR);
 			}
 		}
 	}
